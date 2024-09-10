@@ -1,0 +1,6 @@
+.env
+ReportMakerV2.py
+ReportMakerV1.py
+*.csv
+recived/
+forward/

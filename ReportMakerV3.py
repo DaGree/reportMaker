@@ -17,7 +17,6 @@ today = date.today()
 monday = today - timedelta(days=today.weekday())
 REPORT=str(monday.strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=4)).strftime("%d.%m.%y"))
 PLAN=str((monday + timedelta(days=7)).strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=11)).strftime("%d.%m.%y"))
-# print(REPORT+" "+PLAN)
 
 print("Бот запущен")
 
@@ -25,12 +24,23 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-  bot.send_message(message.chat.id,"Перед началом работы ознакомься с инструкцией (/instruction)"+"\n\n"+"Отчет будет составляться для текущей рабочей недели, которая соответсвует датам: "+REPORT)
+  markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+  btn1=types.KeyboardButton("Инструкция")
+  btn2=types.KeyboardButton("Текущая неделя")
+  markup.add(btn1, btn2)
+  bot.send_message(message.chat.id,"Перед началом работы ознакомься с инструкцией"+"\n\n"+"Отчет будет составляться для текущей рабочей недели, которая соответсвует датам: "+REPORT, reply_markup=markup)
   
-@bot.message_handler(commands=['instruction'])
-def start_message(message):
-  bot.send_message(message.chat.id,"Инструкция:"+"\n"+INSTRUCTION)
-  
+@bot.message_handler(content_types=['text'])
+def func(message):
+  if(message.text == "Инструкция"):
+    bot.send_message(message.chat.id,"Инструкция:"+"\n"+INSTRUCTION)
+  elif(message.text == "Текущая неделя"):
+    bot.send_message(message.chat.id,"Текущая неделя: "+REPORT)
+    
+# @bot.message_handler(content_types=['text'])
+# def func(message):
+#   if(message.text == "Текущая неделя"):
+#     bot.send_message(message.chat.id,"Текущая неделя: "+REPORT)
   
 @bot.message_handler(func=lambda message: True, content_types=['audio', 'photo', 'voice', 'video','text', 'location', 'contact', 'sticker']) #обработчик других типов сообщений
 def default_command(message):
@@ -42,8 +52,7 @@ def handle_document(message):
   downloaded_file = bot.download_file(file_info.file_path) #присутпаем к обработке файла
   
   if ('.csv' in str(message.document.file_name)) and (message.document.file_size<20000):  #проверяем тип файла и размер
-    print ("The file is CSV. The file size is>")
-    print (message.document.file_size)
+    print ("The file from "+str(message.chat.id)+" is CSV. The file size is "+str(message.document.file_size)+" bytes")
     FILENAME = str(message.chat.id)+"_"+message.document.file_name #сохраняем файл с ИД чата 
     src = SRC_R + FILENAME
     with open(src, 'wb') as new_file:
@@ -60,7 +69,7 @@ def handle_document(message):
       except:
         print("Некорректный файл")
         bot.send_message(message.chat.id, f"Документ с недопустимыми значнеиями, повтори шаги по инструкции")
-        os.remove(src)
+        # os.remove(src)
         return        
     for row in results:
       newRow=str(row)
@@ -80,7 +89,7 @@ def handle_document(message):
       bot.send_message(message.chat.id, data)
     
   else:
-    print ("The file is NOT CSV")  
+    print ("The file from "+str(message.chat.id)+" is NOT CSV")  
     bot.send_message(message.chat.id, f"Некорректный формат документа и/или превышен размер файла. Направь файл с типом CSV и весом не более 20Кбайт")
     
 if __name__ == '__main__':

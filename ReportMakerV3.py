@@ -23,6 +23,10 @@ bot = telebot.TeleBot(TOKEN)
 @bot.message_handler(commands=['start'])
 def start_message(message):
   bot.send_message(message.chat.id,"Приветствую")
+  
+@bot.message_handler(func=lambda message: True, content_types=['audio', 'photo', 'voice', 'video','text', 'location', 'contact', 'sticker']) #обработчик других типов сообщений
+def default_command(message):
+    bot.send_message(message.chat.id, "Это не то что я ожидал увидеть, следуй инструкциям")
 
 @bot.message_handler(content_types=['document']) #обработчик получения сообщения с файлом
 def handle_document(message):

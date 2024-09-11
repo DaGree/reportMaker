@@ -11,22 +11,30 @@ TOKEN = os.getenv("TOKEN")
 SRC_R = os.getenv("SRC_R")
 SRC_F = os.getenv("SRC_F")
 LINKNAME = os.getenv("LINKNAME")
+INSTRUCTION = os.getenv("INSTRUCTION")
 
 today = date.today()
-monday = today + timedelta(days=today.weekday())
+monday = today - timedelta(days=today.weekday())
 REPORT=str(monday.strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=4)).strftime("%d.%m.%y"))
 PLAN=str((monday + timedelta(days=7)).strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=11)).strftime("%d.%m.%y"))
-print(REPORT+" "+PLAN)
+# print(REPORT+" "+PLAN)
+
+print("Бот запущен")
 
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-  bot.send_message(message.chat.id,"Приветствую")
+  bot.send_message(message.chat.id,"Перед началом работы ознакомься с инструкцией (/instruction)"+"\n\n"+"Отчет будет составляться для текущей рабочей недели, которая соответсвует датам: "+REPORT)
+  
+@bot.message_handler(commands=['instruction'])
+def start_message(message):
+  bot.send_message(message.chat.id,"Инструкция:"+"\n"+INSTRUCTION)
+  
   
 @bot.message_handler(func=lambda message: True, content_types=['audio', 'photo', 'voice', 'video','text', 'location', 'contact', 'sticker']) #обработчик других типов сообщений
 def default_command(message):
-    bot.send_message(message.chat.id, "Это не то что я ожидал увидеть, следуй инструкциям")
+    bot.send_message(message.chat.id, "Это не то что я ожидал увидеть, следуй инструкции")
 
 @bot.message_handler(content_types=['document']) #обработчик получения сообщения с файлом
 def handle_document(message):

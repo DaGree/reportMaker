@@ -36,11 +36,6 @@ def func(message):
     bot.send_message(message.chat.id,"Инструкция:"+"\n"+INSTRUCTION)
   elif(message.text == "Текущая неделя"):
     bot.send_message(message.chat.id,"Текущая неделя: "+REPORT)
-    
-# @bot.message_handler(content_types=['text'])
-# def func(message):
-#   if(message.text == "Текущая неделя"):
-#     bot.send_message(message.chat.id,"Текущая неделя: "+REPORT)
   
 @bot.message_handler(func=lambda message: True, content_types=['audio', 'photo', 'voice', 'video','text', 'location', 'contact', 'sticker']) #обработчик других типов сообщений
 def default_command(message):

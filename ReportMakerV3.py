@@ -1,7 +1,7 @@
 import csv
 import telebot
 from telebot import types
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import os
 from dotenv import load_dotenv
 
@@ -12,11 +12,17 @@ SRC_R = os.getenv("SRC_R")
 SRC_F = os.getenv("SRC_F")
 LINKNAME = os.getenv("LINKNAME")
 INSTRUCTION = os.getenv("INSTRUCTION")
+ID_ADMIN=os.getenv("ID_ADMIN")
 
 today = date.today()
+print(str(datetime.now().strftime("%H:%M:%S")))
 monday = today - timedelta(days=today.weekday())
 REPORT=str(monday.strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=4)).strftime("%d.%m.%y"))
 PLAN=str((monday + timedelta(days=7)).strftime("%d.%m.%y"))+"-"+str((monday + timedelta(days=11)).strftime("%d.%m.%y"))
+
+def logtime():
+  now=str(datetime.now().strftime("%H:%M:%S"))
+  return now
 
 print("Бот запущен")
 
@@ -47,7 +53,8 @@ def handle_document(message):
   downloaded_file = bot.download_file(file_info.file_path) #присутпаем к обработке файла
   
   if ('.csv' in str(message.document.file_name)) and (message.document.file_size<20000):  #проверяем тип файла и размер
-    print ("The file from "+str(message.chat.id)+" is CSV. The file size is "+str(message.document.file_size)+" bytes")
+    print (logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
+    bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     FILENAME = str(message.chat.id)+"_"+message.document.file_name #сохраняем файл с ИД чата 
     src = SRC_R + FILENAME
     with open(src, 'wb') as new_file:
@@ -63,8 +70,10 @@ def handle_document(message):
             results.append(row[3])
       except:
         print("Некорректный файл")
-        bot.send_message(message.chat.id, f"Документ с недопустимыми значнеиями, повтори шаги по инструкции")
-        # os.remove(src)
+        bot.send_message(message.chat.id, f"Документ с недопустимыми значениями, повтори шаги по инструкции")
+        bot.send_message(ID_ADMIN,logtime()+"\nThe file size is unreadable"+"\n#log")
+        File.close()
+        os.remove(src)
         return        
     for row in results:
       newRow=str(row)
@@ -82,9 +91,11 @@ def handle_document(message):
     with open(file_path, 'r', encoding="utf-8") as file:
       data = file.read()
       bot.send_message(message.chat.id, data)
+      bot.send_message(ID_ADMIN,logtime()+"\nReport was forwarded"+"\n#log")
     
   else:
-    print ("The file from "+str(message.chat.id)+" is NOT CSV")  
+    print (logtime()+" The file from "+str(message.chat.id)+" is NOT CSV")
+    bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is not CSV."+"\n#log")  
     bot.send_message(message.chat.id, f"Некорректный формат документа и/или превышен размер файла. Направь файл с типом CSV и весом не более 20Кбайт")
     
 if __name__ == '__main__':

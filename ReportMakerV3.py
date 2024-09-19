@@ -52,7 +52,7 @@ def handle_document(message):
   file_info = bot.get_file(message.document.file_id)
   downloaded_file = bot.download_file(file_info.file_path) #присутпаем к обработке файла
   
-  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<20000):  #проверяем тип файла и размер
+  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<50000):  #проверяем тип файла и размер
     print (logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     FILENAME = str(message.chat.id)+"_"+message.document.file_name #сохраняем файл с ИД чата 
@@ -95,8 +95,8 @@ def handle_document(message):
     
   else:
     print (logtime()+" The file from "+str(message.chat.id)+" is NOT CSV")
-    bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is not CSV."+"\n#log")  
-    bot.send_message(message.chat.id, f"Некорректный формат документа и/или превышен размер файла. Направь файл с типом CSV и весом не более 20Кбайт")
+    bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is not CSV or file is too big"+"\n#log")  
+    bot.send_message(message.chat.id, f"Некорректный формат документа и/или превышен размер файла. Направь файл с типом CSV и весом не более 50Кбайт")
     
 if __name__ == '__main__':
     bot.polling(non_stop=True)

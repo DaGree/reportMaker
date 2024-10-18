@@ -85,7 +85,7 @@ def handle_document(message):
     with open(file_path, 'w', encoding="utf-8") as file:
       file.write("Отчет "+REPORT+'\n\n')
       for item in newOrder:
-        file.write(str(count)+") "+item+'\n')
+        file.write(str(count)+". "+item+'\n')
         count+=1
       file.write('\n'+"План "+PLAN+'\n')     
     with open(file_path, 'r', encoding="utf-8") as file:

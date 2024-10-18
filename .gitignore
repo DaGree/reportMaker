@@ -2,5 +2,6 @@
 ReportMakerV2.py
 ReportMakerV1.py
 *.csv
+*.txt
 recived/
 forward/

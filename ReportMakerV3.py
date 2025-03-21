@@ -52,7 +52,7 @@ def handle_document(message):
   file_info = bot.get_file(message.document.file_id)
   downloaded_file = bot.download_file(file_info.file_path) #присутпаем к обработке файла
   
-  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<50000):  #проверяем тип файла и размер
+  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<100000):  #проверяем тип файла и размер
     print (logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     FILENAME = str(message.chat.id)+"_"+message.document.file_name #сохраняем файл с ИД чата 
@@ -67,7 +67,7 @@ def handle_document(message):
       try:
         reader = csv.reader(File, delimiter=';')
         for row in reader:
-            results.append(row[3])
+            results.append(row[3]) #4 поле если общие трудозатраты, 3 поле если трудозатраты по проекту
       except:
         print("Некорректный файл")
         bot.send_message(message.chat.id, f"Документ с недопустимыми значениями, повтори шаги по инструкции")
@@ -94,7 +94,7 @@ def handle_document(message):
       bot.send_message(ID_ADMIN,logtime()+"\nReport was forwarded"+"\n#log")
     
   else:
-    print (logtime()+" The file from "+str(message.chat.id)+" is NOT CSV")
+    print (logtime()+" The file from "+str(message.chat.id)+" is not CSV or file is too big")
     bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is not CSV or file is too big"+"\n#log")  
     bot.send_message(message.chat.id, f"Некорректный формат документа и/или превышен размер файла. Направь файл с типом CSV и весом не более 50Кбайт")
     

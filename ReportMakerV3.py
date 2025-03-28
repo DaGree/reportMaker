@@ -14,6 +14,8 @@ LINKNAME = os.getenv("LINKNAME")
 INSTRUCTION = os.getenv("INSTRUCTION")
 ID_ADMIN=os.getenv("ID_ADMIN")
 
+MESS_MAX_LENGTH = 4096 #параметр который позволяет разбивать сообщение на нуэное кол-во символов
+
 today = date.today()
 print(str(datetime.now().strftime("%H:%M:%S")))
 monday = today - timedelta(days=today.weekday())
@@ -52,7 +54,7 @@ def handle_document(message):
   file_info = bot.get_file(message.document.file_id)
   downloaded_file = bot.download_file(file_info.file_path) #присутпаем к обработке файла
   
-  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<100000):  #проверяем тип файла и размер
+  if ('.csv' in str(message.document.file_name)) and (message.document.file_size<1000000):  #проверяем тип файла и размер
     print (logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     bot.send_message(ID_ADMIN,logtime()+"\nThe file from user "+str(message.chat.id)+" is CSV.\nThe file size is "+str(message.document.file_size)+" bytes"+"\n#log")
     FILENAME = str(message.chat.id)+"_"+message.document.file_name #сохраняем файл с ИД чата 
@@ -90,7 +92,10 @@ def handle_document(message):
       file.write('\n'+"План "+PLAN+'\n')     
     with open(file_path, 'r', encoding="utf-8") as file:
       data = file.read()
-      bot.send_message(message.chat.id, data)
+    #bot.send_message(message.chat.id, data)
+      for x in range(0, len(data), MESS_MAX_LENGTH): #позволяет обрабатывать отчет с более 50 задачами
+        mess = data[x: x + MESS_MAX_LENGTH]
+        bot.send_message(message.chat.id, mess)
       bot.send_message(ID_ADMIN,logtime()+"\nReport was forwarded"+"\n#log")
     
   else:

@@ -5,3 +5,6 @@ ReportMakerV1.py
 *.txt
 recived/
 forward/
+build/
+dist/
+*.spec

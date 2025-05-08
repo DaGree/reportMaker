@@ -5,11 +5,25 @@ from datetime import date, timedelta, datetime
 import os
 from dotenv import load_dotenv
 
+
+folder_path = 'recived'
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+else:
+    print(f"Папка `{folder_path}` уже существует!")
+    
+folder_path = 'forward'
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+else:
+    print(f"Папка `{folder_path}` уже существует!")  
+
+
 load_dotenv(".env")
 
 TOKEN = os.getenv("TOKEN")
-SRC_R = os.getenv("SRC_R")
-SRC_F = os.getenv("SRC_F")
+SRC_R="recived/"
+SRC_F="forward/"
 LINKNAME = os.getenv("LINKNAME")
 INSTRUCTION = os.getenv("INSTRUCTION")
 ID_ADMIN=os.getenv("ID_ADMIN")

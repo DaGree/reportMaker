@@ -3,8 +3,9 @@ ReportMakerV2.py
 ReportMakerV1.py
 *.csv
 *.txt
-recived/
-forward/
+recived*/
+forward*/
 build/
 dist/
 *.spec
+ReportMakerEx.py
